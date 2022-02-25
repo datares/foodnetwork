@@ -1,0 +1,48 @@
+---
+title: "Beat Bobby Flay"
+author: "Kayla Teng"
+date: "2/12/2022"
+output: html_document
+---
+
+```{r}
+library("readxl")
+beatbobbyflay <- read_excel("C:\\Users\\kayla\\Documents\\DataRes\\Beat Bobby Flay\\beatbobbyflay.xlsx")
+```
+
+```{r fig.width = 10}
+judges <- beatbobbyflay[ ,14:16]
+alljudges <- data.frame(unlist(judges))
+appearance <- as.data.frame(sort(table(alljudges), decreasing = TRUE))
+top10appearances <- head(appearance, 10)
+library(ggplot2)
+library(scales)
+ggplot(top10appearances, aes(reorder(alljudges, Freq), Freq))+ geom_bar(stat = "identity", fill = "#b82329") +
+  coord_flip() + ggtitle("Top 10 Most Appearances for Second Round Judges on Beat Bobby Flay") + xlab("Second Round Judge") +ylab("Number of Appearances on Beat Bobby Flay") + scale_y_continuous(labels = comma, limits = c(0, 20), breaks = seq(0, 20, by = 5)) + geom_text(aes(label = scales :: comma(Freq, accuracy = 1)), hjust = -0.1, colour = "black")
+```
+
+```{r}
+library(dplyr)
+top10judges = beatbobbyflay %>% filter_all(any_vars(. %in% c("Michael Psilakis", "Frank Prisinzano", "Leah Cohen", "Ivy Stark", "Madison Cowan", "Hugh Mangum", "Lourdes Castro", "Michael Lomonaco", "Tricia Williams", "Ed McFarland")))
+judgeandwinner <- top10judges[ ,c(7,14:16)]
+michaelpsilakis = judgeandwinner %>% filter_all(any_vars(. %in% c("Michael Psilakis")))
+michaelpsilakis <- michaelpsilakis[-14, ]
+frankprisinzano = judgeandwinner %>% filter_all(any_vars(. %in% c("Frank Prisinzano")))
+leahcohen = judgeandwinner %>% filter_all(any_vars(. %in% c("Leah Cohen")))
+ivystark = judgeandwinner %>% filter_all(any_vars(. %in% c("Ivy Stark")))
+madisoncowan = judgeandwinner %>% filter_all(any_vars(. %in% c("Madison Cowan")))
+hughmangum = judgeandwinner %>% filter_all(any_vars(. %in% c("Hugh Mangum")))
+lourdescastro = judgeandwinner %>% filter_all(any_vars(. %in% c("Lourdes Castro")))
+michaellomonaco = judgeandwinner %>% filter_all(any_vars(. %in% c("Michael Lomonaco")))
+triciawilliams = judgeandwinner %>% filter_all(any_vars(. %in% c("Tricia Williams")))
+edmcfarland = judgeandwinner %>% filter_all(any_vars(. %in% c("Ed McFarland")))
+```
+
+```{r fig.width = 15}
+library("readxl")
+propofjudges <- read_excel("propofjudges.xlsx")
+ggplot(propofjudges, aes(x = Judge, y = `Number of Wins`, fill = Winners)) + geom_col(position = "fill") + xlab("Second Round Judge")+ylab("Number of Wins") + ggtitle("Proportion of Wins and Losses by Bobby Flay Based on Second Round Judges with Most Appearances") + scale_fill_manual(values = c("#b82329", "#113a86"))
+```
+
+
+
